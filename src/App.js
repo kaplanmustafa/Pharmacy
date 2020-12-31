@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import axios from "axios";
+import Provinces from "./Provinces";
+import Table from "./Table";
 
-function App() {
+const App = () => {
+  const [pharmacies, setPharmacies] = useState([]);
+
+  let newDate = new Date();
+  let date = newDate.getDate();
+  let month = newDate.getMonth() + 1;
+  let year = newDate.getFullYear();
+
+  const getPharmaciesByProvinceId = async (provinceId) => {
+    try {
+      const response = await axios.get(
+        "http://api.kodlama.net/eczane/il/" + provinceId
+      );
+      setPharmacies(response.data.data);
+    } catch (error) {}
+  };
+
+  const onChangeProvince = (event) => {
+    let id = event.target.options.selectedIndex;
+    if (id < 10) {
+      id = "0" + id;
+    }
+    getPharmaciesByProvinceId(id);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container mt-3">
+      <h1 className="text-primary text-center">NÖBETÇİ ECZANELER</h1>
+      <h3 className="text-center">
+        {date}.{month}.{year}
+      </h3>
+      <Provinces onChangeProvince={onChangeProvince} />
+      {pharmacies.length !== 0 && <Table pharmacies={pharmacies} />}
     </div>
   );
-}
+};
 
 export default App;
