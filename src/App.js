@@ -11,6 +11,14 @@ const App = () => {
   let month = newDate.getMonth() + 1;
   let year = newDate.getFullYear();
 
+  if (date < 10) {
+    date = "0" + date;
+  }
+
+  if (month < 10) {
+    month = "0" + month;
+  }
+
   const getPharmaciesByProvinceId = async (provinceId) => {
     try {
       const response = await axios.get(
